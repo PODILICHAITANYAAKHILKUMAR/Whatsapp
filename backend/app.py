@@ -19,7 +19,7 @@ headers = { "Authorization": f"Bearer {ACCESS_TOKEN}", "Content-Type": "applicat
 
 @app.route('/') 
 def home(): 
-    return 'Sever Running'
+    return 'Sever Running at {}'
 
 @app.route('/send_messages', methods=['POST']) 
 def send_messages(): 
@@ -50,4 +50,4 @@ def send_messages():
     except Exception as e:
         raise e
 if __name__ == '__main__':
-    app.run(port=5000,debug=True)
+    app.run(port=CONFIG['SERVER_PORT'],debug=CONFIG['SERVER_DEBUG_MODE'])

@@ -9,12 +9,12 @@ def fetch_config():
         CONFIG = yaml.safe_load(file)
 
 def get_contacts(df): 
-    print(df)
     try: 
         results=[]
-        phones,messages=df['phones'],df['messages']
-        for phone,message in zip(phones,messages): 
-            phone = phone.strip() 
+        phones = list(df['phones'].values())
+        messages = list(df['messages'].values())
+        for phone,message in zip(phones,messages):
+            phone = str(phone).strip() 
             message = message.strip()
             if not phone or not message:
                 continue
@@ -35,7 +35,7 @@ def parse_file(file):
             df = pd.read_excel(file) 
         else: 
             return pd.DataFrame()
-        return df.head().to_dict(orient="records")
+        return df.to_dict()
     except Exception as e:
         raise e
 
