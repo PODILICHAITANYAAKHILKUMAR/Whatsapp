@@ -3,7 +3,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS 
 import requests 
 from dotenv import load_dotenv 
-from utils import parse_file_and_get_contacts
+from utils import parse_file_and_get_contacts,CONFIG
 
 load_dotenv()
 
@@ -13,7 +13,7 @@ CORS(app)
 ACCESS_TOKEN = os.getenv('WHATSAPP_TOKEN') 
 PHONE_NUMBER_ID = os.getenv('PHONE_NUMBER_ID')
 
-API_URL = f"https://graph.facebook.com/{PHONE_NUMBER_ID}/messages"
+API_URL = CONFIG['API_URL'].format(PHONE_NUMBER_ID=PHONE_NUMBER_ID)
 
 headers = { "Authorization": f"Bearer {ACCESS_TOKEN}", "Content-Type": "application/json" }
 

@@ -1,5 +1,12 @@
-
 import pandas as pd
+import yaml
+
+CONFIG=None
+def fetch_config():
+    global CONFIG
+    # Load YAML constants
+    with open("constants.yaml", "r") as file:
+        CONFIG = yaml.safe_load(file)
 
 def get_contacts(df): 
     print(df)
@@ -36,3 +43,5 @@ def parse_file_and_get_contacts(file):
     df = parse_file(file)
     results=get_contacts(df)
     return results
+
+fetch_config()

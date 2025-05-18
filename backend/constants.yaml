@@ -1,0 +1,1 @@
+API_URL: "https://graph.facebook.com/{PHONE_NUMBER_ID}/messages"
