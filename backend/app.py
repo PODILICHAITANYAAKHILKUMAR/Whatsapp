@@ -17,6 +17,8 @@ API_URL = CONFIG['API_URL'].format(PHONE_NUMBER_ID=PHONE_NUMBER_ID)
 
 headers = { "Authorization": f"Bearer {ACCESS_TOKEN}", "Content-Type": "application/json" }
 
+SERVER_PORT = CONFIG['SERVER_PORT']
+
 @app.route('/') 
 def home(): 
     return 'Sever Running at {}'
@@ -36,7 +38,7 @@ def send_messages():
                         "body": message
                     }
                 }
-            response = requests.post(API_URL, headers=headers, json=payload)
+            response = requests.post(API_URL, headers=headers, json=payload,timeout=10)
             if response.status_code == 200:
                 results.append({"number": phone, 'message':message,"status": "sent"})
             else:
@@ -50,4 +52,4 @@ def send_messages():
     except Exception as e:
         raise e
 if __name__ == '__main__':
-    app.run(port=CONFIG['SERVER_PORT'],debug=CONFIG['SERVER_DEBUG_MODE'])
+    app.run(port=SERVER_PORT,debug=CONFIG['SERVER_DEBUG_MODE'])

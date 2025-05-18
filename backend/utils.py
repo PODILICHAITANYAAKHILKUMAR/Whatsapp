@@ -1,18 +1,19 @@
 import pandas as pd
 import yaml
 
-CONFIG=None
 def fetch_config():
-    global CONFIG
     # Load YAML constants
-    with open("constants.yaml", "r") as file:
-        CONFIG = yaml.safe_load(file)
-
-def get_contacts(df): 
+    try:
+        with open("constants.yaml", "r") as file:
+            config = yaml.safe_load(file)
+            return config
+    except Exception as e:
+        raise e
+def get_contacts(contact_info): 
     try: 
-        results=[]
-        phones = list(df['phones'].values())
-        messages = list(df['messages'].values())
+        contacts=[]
+        phones = list(contact_info['phones'].values())
+        messages = list(contact_info['messages'].values())
         for phone,message in zip(phones,messages):
             phone = str(phone).strip() 
             message = message.strip()
@@ -20,8 +21,8 @@ def get_contacts(df):
                 continue
             if not phone.startswith("+"):
                 phone = "+91" + phone
-            results.append({'phone':phone,'message':message})
-        return results
+            contacts.append({'phone':phone,'message':message})
+        return contacts
     except Exception as e: 
         raise e
 def parse_file(file):
@@ -44,4 +45,4 @@ def parse_file_and_get_contacts(file):
     results=get_contacts(df)
     return results
 
-fetch_config()
+CONFIG=fetch_config()

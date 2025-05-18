@@ -1,5 +1,6 @@
 import React, { useState } from "react"; 
-import axios from 'axios'; 
+import axios from 'axios';
+import {SEND_MESSAGES_API} from './constants' 
 function FileUploader() 
 { 
     const [selectedFile, setSelectedFile] = useState(null);
@@ -13,8 +14,7 @@ const handleSendMessages = async () => {
     const formData = new FormData();
     formData.append("file", selectedFile);
     try {
-        console.log(formData)
-        const response = await axios.post('http://localhost:5000/send_messages', formData);
+        const response = await axios.post(SEND_MESSAGES_API, formData);
         const data = await response.json();
         alert(data.message);
     } catch (error) {
