@@ -1,20 +1,19 @@
 
-from flask import jsonify 
 import pandas as pd
 
 def get_contacts(df): 
     print(df)
     try: 
         results=[]
-        phones,texts=df['phones'],df['text']
-        for phone,text in zip(phones,texts): 
+        phones,messages=df['phones'],df['messages']
+        for phone,message in zip(phones,messages): 
             phone = phone.strip() 
-            text = text.strip()
-            if not phone or not text:
+            message = message.strip()
+            if not phone or not message:
                 continue
             if not phone.startswith("+"):
                 phone = "+91" + phone
-            results.append({'phone':phone,'text':text})
+            results.append({'phone':phone,'message':message})
         return results
     except Exception as e: 
         raise e
@@ -28,12 +27,8 @@ def parse_file(file):
         elif file_name.endswith('.xls'): 
             df = pd.read_excel(file) 
         else: 
-            return jsonify({"error": "Unsupported file type"}), 400
-        preview = df.head().to_dict(orient="records")
-        return jsonify({
-            "message": "File processed successfully",
-            "preview": preview
-        })
+            return pd.DataFrame()
+        return df.head().to_dict(orient="records")
     except Exception as e:
         raise e
 

@@ -13,7 +13,6 @@ CORS(app)
 ACCESS_TOKEN = os.getenv('WHATSAPP_TOKEN') 
 PHONE_NUMBER_ID = os.getenv('PHONE_NUMBER_ID')
 
-API_VERSION = 'v19.0'
 API_URL = f"https://graph.facebook.com/{PHONE_NUMBER_ID}/messages"
 
 headers = { "Authorization": f"Bearer {ACCESS_TOKEN}", "Content-Type": "application/json" }
@@ -28,22 +27,22 @@ def send_messages():
         contacts=parse_file_and_get_contacts(request.files.get('file'))
         results=[]
         for contact in contacts:
-            phone,text=contact['phone'],contact['text']
+            phone,message=contact['phone'],contact['message']
             payload = {
                     "messaging_product": "whatsapp",
                     "to": phone,
                     "type": "text",
                     "text": {
-                        "body": text
+                        "body": message
                     }
                 }
             response = requests.post(API_URL, headers=headers, json=payload)
             if response.status_code == 200:
-                results.append({"number": phone, 'text':text,"status": "sent"})
+                results.append({"number": phone, 'message':message,"status": "sent"})
             else:
                 results.append({
                         "number": phone,
-                        'text':text,
+                        'message':message,
                         "status": "error",
                         "detail": response.text
                     })
