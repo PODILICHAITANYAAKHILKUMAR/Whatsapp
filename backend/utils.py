@@ -5,15 +5,17 @@ import pandas as pd
 def get_contacts(df): 
     print(df)
     try: 
-        results = [] 
-        for contact in df: 
-            phone = str(contact.get("Mobile Number", "")).strip() 
-            text = str(contact.get("Message Text", "")).strip()
+        results=[]
+        phones,texts=df['phones'],df['text']
+        for phone,text in zip(phones,texts): 
+            phone = phone.strip() 
+            text = text.strip()
             if not phone or not text:
                 continue
             if not phone.startswith("+"):
                 phone = "+91" + phone
             results.append({'phone':phone,'text':text})
+        return results
     except Exception as e: 
         raise e
 def parse_file(file):
