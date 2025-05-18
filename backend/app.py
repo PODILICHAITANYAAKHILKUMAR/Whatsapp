@@ -3,7 +3,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS 
 import requests 
 from dotenv import load_dotenv 
-from utils import parse_file
+from utils import parse_file_and_get_contacts
 
 load_dotenv()
 
@@ -24,43 +24,31 @@ def home():
 
 @app.route('/send_messages', methods=['POST']) 
 def send_messages(): 
-    contacts = parse_file(request.files.get('file')) 
-    print('con', contacts) 
-    if not contacts: 
-        return jsonify({"message": "Messages processed", "results": []}) 
-    results = [] 
-    for contact in contacts: 
-        phone = str(contact.get("Mobile Number", "")).strip() 
-        text = str(contact.get("Message Text", "")).strip()
-    if not phone or not text:
-        results.append({
-            "number": phone,
-            "status": "skipped - missing fields"
-        })
-
-    if not phone.startswith("+"):
-        phone = "+91" + phone
-
-    payload = {
-        "messaging_product": "whatsapp",
-        "to": phone,
-        "type": "text",
-        "text": {
-            "body": text
-        }
-    }
-
-    response = requests.post(API_URL, headers=headers, json=payload)
-    if response.status_code == 200:
-        results.append({"number": phone, "status": "sent"})
-    else:
-        results.append({
-            "number": phone,
-            "status": "error",
-            "detail": response.text
-        })
-
-    return jsonify({"message": "Messages processed", "results": results})
-
+    try:
+        contacts=parse_file_and_get_contacts(request.files.get('file'))
+        results=[]
+        for contact in contacts:
+            phone,text=contact['phone'],contact['text']
+            payload = {
+                    "messaging_product": "whatsapp",
+                    "to": phone,
+                    "type": "text",
+                    "text": {
+                        "body": text
+                    }
+                }
+            response = requests.post(API_URL, headers=headers, json=payload)
+            if response.status_code == 200:
+                results.append({"number": phone, 'text':text,"status": "sent"})
+            else:
+                results.append({
+                        "number": phone,
+                        'text':text,
+                        "status": "error",
+                        "detail": response.text
+                    })
+        return jsonify({"message": "Messages processed", "results": results})
+    except Exception as e:
+        raise e
 if __name__ == '__main__':
     app.run(port=5000,debug=True)

@@ -2,13 +2,21 @@
 from flask import jsonify 
 import pandas as pd
 
-def get_contacts(file): 
+def get_contacts(df): 
+    print(df)
     try: 
-        contacts = parse_file(file) 
+        results = [] 
+        for contact in df: 
+            phone = str(contact.get("Mobile Number", "")).strip() 
+            text = str(contact.get("Message Text", "")).strip()
+            if not phone or not text:
+                continue
+            if not phone.startswith("+"):
+                phone = "+91" + phone
+            results.append({'phone':phone,'text':text})
     except Exception as e: 
         raise e
-
-def parse_file(file): 
+def parse_file(file):
     try: 
         file_name = file.filename.lower() 
         if file_name.endswith('.csv'): 
@@ -26,3 +34,8 @@ def parse_file(file):
         })
     except Exception as e:
         raise e
+
+def parse_file_and_get_contacts(file):
+    df = parse_file(file)
+    results=get_contacts(df)
+    return results
