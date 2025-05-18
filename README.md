@@ -1,4 +1,4 @@
 # Whatsapp
 Installations:
   Frontend: npm install
-  Backend: pip install -r requirements.txt
+  Backend: python -m pip install -r requirements.txt
